@@ -1,0 +1,306 @@
+/* Importar fuentes */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&display=swap');
+
+/* Reset Básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #F4F7F6;
+    font-family: 'Open Sans', sans-serif;
+    color: #264653;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+
+.main_wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #ffffff;
+    box-shadow: 0 0 50px rgba(0,0,0,0.05);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Cabecera */
+.header_wrapper {
+    height: 120px;
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+}
+
+#logo img, #banner img {
+    max-height: 80px;
+    object-fit: contain;
+}
+
+/* Navegación */
+.menubar {
+    background: #264653;
+    padding: 0 40px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+#menu {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+}
+
+#menu a {
+    color: rgba(255,255,255,0.8);
+    font-weight: 600;
+    font-size: 15px;
+    text-transform: uppercase;
+    padding: 18px 0;
+    border-bottom: 3px solid transparent;
+}
+
+#menu a:hover {
+    color: #ffffff;
+    border-bottom: 3px solid #E9C46A;
+}
+
+
+/* Wrapper del contenido*/
+.content_wrapper {
+    display: flex;
+    flex: 1;
+    padding: 40px;
+    gap: 40px;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+#sidebar_title {
+    background: #2A9D8F;
+    color: #ffffff;
+    padding: 15px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    border-radius: 12px 12px 0 0;
+
+}
+
+#cats {
+    list-style: none;
+    background: #fff;
+    border: 1px solid #eee;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+}
+
+#cats a {
+    display: block;
+    padding: 12px 20px;
+    color: #264653;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+#cats a:hover {
+    background: #f9f9f9;
+    color: #2A9D8F;
+    padding-left: 25px;
+}
+
+/* Área Principal */
+#content_area {
+    flex-grow: 1;
+}
+
+/* Listado de paquetes */
+#packages_box {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.detail-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    min-height: 500px;
+}
+
+.detail-image-container {
+    background: #f0f0f0;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.detail-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.detail-image-container:hover img {
+    transform: scale(1.05);
+}
+
+.detail-info {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.single_package {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    padding: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.single_package:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.single_package h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: #264653;
+    min-height: 50px;
+}
+
+.single_package img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.single_package p {
+    font-size: 0.95rem;
+    color: #2A9D8F;
+    margin-bottom: 15px;
+    flex-grow: 1;
+}
+
+.single_package a {
+    display: inline-block;
+    background: #E9C46A;
+    color: #264653;
+    padding: 8px 15px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.single_package a:hover {
+    background: #F4A261;
+    color: #fff;
+}
+/* Estilos del Buscador en el Navbar */
+#search_form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#search_form input[type="text"],
+#search_form input[type="date"] {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: none;
+    font-family: 'Open Sans', sans-serif;
+    outline: none;
+}
+
+#search_form button {
+    background: #E9C46A;
+    color: #264653;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background 0.3s ease;
+}
+
+#search_form button:hover {
+    background: #F4A261;
+    color: #fff;
+}
+/* --- Estilos para el Icono de Admin en Header --- */
+.admin-toggle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background: #f0f0f0;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-left: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.admin-toggle:hover {
+    transform: scale(1.1);
+    background: #e0e0e0;
+}
+
+.admin-icon {
+    font-size: 24px;
+}
+
+/* --- Estilos para Botones Administrador --- */
+.btn-disabled {
+    background-color: #cccccc;
+    color: #888888;
+    cursor: not-allowed;
+    pointer-events: none;
+    box-shadow: none ;
+    transform: none ;
+    opacity: 0.6;
+}
+/* --- Responsive para Móviles --- */
+@media (max-width: 900px) {
+    .detail-card {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+
+    .detail-image-container {
+        height: 300px;
+    }
+}
