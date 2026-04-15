@@ -9,8 +9,8 @@ $is_admin = $_SESSION['admin_mode'] ?? false;
 // Lógica de eliminación (Doble seguridad: Solo ejecuta si es admin)
 if (isset($_POST['btn_eliminar']) && $is_admin) {
     $id_a_borrar = $_POST['id_borrar'];
-    $sql_delete = "DELETE FROM packages WHERE package_id = :id";
-    $stmt_delete = $pdo->prepare($sql_delete);
+
+    $stmt_delete = $conexion->prepare("DELETE FROM packages WHERE package_id = :id");
 
     if ($stmt_delete->execute([':id' => $id_a_borrar])) {
         echo "<script>
@@ -99,8 +99,8 @@ if (isset($_POST['btn_eliminar']) && $is_admin) {
                     <?php
                     if (isset($_GET['pack_id'])) {
                         $package_id = $_GET['pack_id'];
-                        $sql = "SELECT * FROM packages WHERE package_id = :id";
-                        $stmt = $pdo->prepare($sql);
+
+                        $stmt = $conexion->prepare("SELECT * FROM packages WHERE package_id = :id");
                         $stmt->execute([':id' => $package_id]);
 
                         if ($row_pack = $stmt->fetch()) {
@@ -114,12 +114,9 @@ if (isset($_POST['btn_eliminar']) && $is_admin) {
                             $raw_end = isset($row_pack['end_date']) ? $row_pack['end_date'] : null;
                             $pack_start = $raw_start ? date("d/m/Y", strtotime($raw_start)) : "Consultar";
                             $pack_end = $raw_end ? date("d/m/Y", strtotime($raw_end)) : "Consultar";
-
-                            // --- PREPARAMOS LOS BOTONES DE ADMIN ---
-                            // Por defecto vacíos
                             $admin_buttons = "";
                             
-                            // Si es admin, rellenamos la variable con el HTML
+                            // Si es admin, relleno la variable con el HTML
                             if ($is_admin) {
                                 $admin_buttons = "
                                     <a href='editar_paquete.php?pack_id=$pack_id' class='btn-action btn-edit'>Editar</a>
@@ -130,7 +127,6 @@ if (isset($_POST['btn_eliminar']) && $is_admin) {
                                     </form>
                                 ";
                             }
-                            // ---------------------------------------
 
                             echo "
                             <div class='detail-card'>

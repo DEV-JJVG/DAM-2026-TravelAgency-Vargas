@@ -5,7 +5,7 @@ require_once "vistas/db.php";
 if (isset($_GET['pack_id'])) {
     $pack_id = $_GET['pack_id'];
 
-    $stmt = $pdo->prepare("SELECT * FROM packages WHERE package_id = :id");
+    $stmt = $conexion->prepare("SELECT * FROM packages WHERE package_id = :id");
     $stmt->execute([':id' => $pack_id]);
     $row = $stmt->fetch();
 
@@ -41,19 +41,17 @@ if (isset($_POST['update_package'])) {
     // Actualización SQL con PDO
     $sql_update = "UPDATE packages SET 
                     package_title = :title, 
-                    package_price = :price, 
-                    package_desc = :desc, 
-                    package_image = :img 
-                   WHERE package_id = :id";
-
-    $stmt = $pdo->prepare($sql_update);
+             package_price = :price,
+             package_desc  = :desc,
+             package_image = :img
+         WHERE package_id = :id";
 
     $result = $stmt->execute([
         ':title' => $title,
         ':price' => $price,
-        ':desc' => $desc,
-        ':img' => $final_image,
-        ':id' => $id
+        ':desc'  => $desc,
+        ':img'   => $final_image,
+        ':id'    => $id
     ]);
 
     if ($result) {
@@ -71,7 +69,7 @@ if (isset($_POST['update_package'])) {
         <title>Editar Paquete</title>
         <link rel="stylesheet" href="assets/styles/style.css">
         <style>
-            /*Estilado para el formulario basiquito*/
+            /*Estilado para el formulario básico*/
             .form-contenedor {
                 max-width: 600px;
                 margin: 20px auto;

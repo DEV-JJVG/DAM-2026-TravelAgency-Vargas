@@ -1,5 +1,5 @@
 <?php
-include("includes/db.php");
+require_once __DIR__ . '/db.php';
 ?>
 <style type="text/css">
     #fixtd {
@@ -14,8 +14,6 @@ include("includes/db.php");
 
     #btn {
         margin-top: 15px;
-        margin-bottom: 15px;
-        font-size: 18px;
         margin-bottom: 20px;
         font-weight: bolder;
         background-color: #4CAF50; /* Green */
@@ -40,6 +38,7 @@ include("includes/db.php");
         margin-top: 10px;
     }
 </style>
+
 <div>
     <form action="" method="post">
         <table width="500px" align="center" bgcolor="skyblue">
@@ -64,43 +63,29 @@ include("includes/db.php");
                 <br>
             </tr>
         </table>
-        <h2 style="float: right; padding: 0px 25px 10px 0px; font-family: arial"><a href="customer_register.php"
-                                                                                    style="text-decoration: none;">Regístrate aquí</a>
+        <h2 style="float: right; padding: 0px 25px 10px 0px; font-family: arial">
+            <a href="customer_register.php" style="text-decoration: none;">Regístrate aquí</a>
         </h2>
     </form>
 
     <?php
-    global $con;
     if (isset($_POST['login'])) {
         $c_email = $_POST['email'];
-        $c_pass = $_POST['pass'];
+        $c_pass  = $_POST['pass'];
 
-        $sel_c = "select * from customers where customer_pass='$c_pass' AND customer_email='$c_email'";
-        $run_c = mysqli_query($con, $sel_c);
+        // SELECT * FROM customers WHERE customer_email = :email AND customer_pass = :pass
+        // Tabla: customers — Parámetros: :email y :pass desde el formulario POST
+        // Los parámetros están enlazados con prepare/execute para prevenir inyección SQL
+        $stmt_customer = $conexion->prepare(
+            "SELECT * FROM customers WHERE customer_email = :email AND customer_pass = :pass"
+        );
+        $stmt_customer->execute([':email' => $c_email, ':pass' => $c_pass]);
 
-        $check_customer = mysqli_num_rows($run_c);
+        $check_customer = $stmt_customer->rowCount(); // 0 = credenciales incorrectas
 
         if ($check_customer == 0) {
             echo "<script>alert('Password or email is incorrect, please try again!')</script>";
             exit();
-        }
-
-        $ip = getIp();
-
-        $sel_cart = "select * from cart where ip_add='$ip'";
-
-        $run_cart = mysqli_query($con, $sel_cart);
-
-        $check_cart = mysqli_num_rows($run_cart);
-
-        if ($check_customer > 0 and $check_cart == 0) {
-            $_SESSION['customer_email'] = $c_email;
-            echo "<script>alert('You have logged in successfully. Thanks!')</script>";
-            echo "<script>window.open('customer/my_account.php','_self')</script>";
-        } else {
-            $_SESSION['customer_email'] = $c_email;
-            echo "<script>alert('You have logged in successfully. Thanks!')</script>";
-            echo "<script>window.open('checkout.php','_self')</script>";
         }
     }
     ?>

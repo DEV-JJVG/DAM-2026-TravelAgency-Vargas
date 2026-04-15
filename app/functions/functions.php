@@ -2,85 +2,82 @@
 
 require_once "vistas/db.php";
 
-// Obtengo de la IP para su guardado en la base de datos
-function getIp(): string {
-    return $_SERVER['HTTP_CLIENT_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'];
-}
+// Obtengo categorías y tipos mediante una sentencia Select desde la base de datos SQL
 
-// Obtengo categorías y tipos 
+function getCategorias(): void {
+    global $conexion;
 
-function getCats(): void {
-    global $pdo;
+    $stmt = $conexion->prepare("SELECT cat_id, cat_title FROM categories");
+    $stmt->execute();
 
-    $stmt = $pdo->query("SELECT cat_id, cat_title FROM categories");
-
-    while ($row = $stmt->fetch()) {
-        echo "<li><a href='index.php?cat={$row['cat_id']}'>{$row['cat_title']}</a></li>";
+    // Renderizo cada categoría como un ítem de lista enlazado
+    while ($fila = $stmt->fetch()) {
+        echo "<li><a href='index.php?cat={$fila['cat_id']}'>{$fila['cat_title']}</a></li>";
     }
 }
 
-function getTypes(): void {
-    global $pdo;
+function getTipos(): void {
+    global $conexion;
 
-    $stmt = $pdo->query("SELECT type_id, type_title FROM types");
+    $stmt = $conexion->prepare("SELECT type_id, type_title FROM types");
+    $stmt->execute();
 
-    while ($row = $stmt->fetch()) {
-        echo "<li><a href='index.php?type={$row['type_id']}'>{$row['type_title']}</a></li>";
+    // Renderizo cada tipo como un ítem de lista enlazado
+    while ($fila = $stmt->fetch()) {
+        echo "<li><a href='index.php?type={$fila['type_id']}'>{$fila['type_title']}</a></li>";
     }
 }
 
 // Render de paquetes
 
-function renderPackage(array $pack): void {
+function renderPackage(array $paquetes): void {
     echo "
     <div class='single_package'>
-        <h3>{$pack['package_title']}</h3>
-        <img src='assets/imagenes/packages/{$pack['package_image']}' alt='{$pack['package_title']}'>
-        <p><strong>Precio: {$pack['package_price']} €</strong></p>
-        <a href='details.php?pack_id={$pack['package_id']}'>Detalles</a>
+        <h3>{$paquetes['package_title']}</h3>
+        <img src='assets/imagenes/packages/{$paquetes['package_image']}' alt='{$paquetes['package_title']}'>
+        <p><strong>Precio: {$paquetes['package_price']} €</strong></p>
+        <a href='details.php?pack_id={$paquetes['package_id']}'>Detalles</a>
     </div>
     ";
 }
 
 // Consultas de paquetes
 
-function getPack(): void {
-    // Si se ha seleccionado una categoría o un tipo específico, no ejecutamos esta función por defecto
+function getPaquetes(): void {
+    // Si hay algún filtro activo, esta función no debe ejecutarse
     if (isset($_GET['cat']) || isset($_GET['type']) || isset($_GET['search'])) {
         return;
     }
 
-    global $pdo;
+    global $conexion;
 
-    // Selecciono los paquetes donde package_type sea 1 (Destacados)
+    // Intentamos obtener los paquetes marcados como destacados (package_type = 1)
+    $stmt = $conexion->prepare("SELECT * FROM packages WHERE package_type = 1 LIMIT 6");
+    $stmt->execute();
 
-    $sql = "SELECT * FROM packages WHERE package_type = 1 LIMIT 6";
-
-    $stmt = $pdo->query($sql);
-
+    // Si no hay paquetes destacados, mostramos 6 paquetes aleatorios como fallback
     if ($stmt->rowCount() == 0) {
-        $sql = "SELECT * FROM packages ORDER BY RAND() LIMIT 6";
-        $stmt = $pdo->query($sql);
+        $stmt = $conexion->prepare("SELECT * FROM packages ORDER BY RAND() LIMIT 6");
+        $stmt->execute();
     }
 
-    while ($row = $stmt->fetch()) {
-        renderPackage($row);
+    while ($fila = $stmt->fetch()) {
+        renderPackage($fila);
     }
 }
 
-function getCatPack(): void {
+function getCatPaquetes(): void {
     if (!isset($_GET['cat'])) {
         return;
     }
 
-    global $pdo;
+    global $conexion;
 
     $cat_id = $_GET['cat'];
 
-    $sql = "SELECT * FROM packages WHERE package_cat = :id";
-    $stmt = $pdo->prepare($sql);
+    $stmt = $conexion->prepare("SELECT * FROM packages WHERE package_cat = :id");
 
-    // Ejecuto pasando el parámetro
+    // Ejecuto pasando el parámetro, en este caso el id de la categoría
     $stmt->execute([':id' => $cat_id]);
 
     // Verifico si hay resultados
@@ -89,23 +86,21 @@ function getCatPack(): void {
         return;
     }
 
-    while ($row = $stmt->fetch()) {
-        renderPackage($row);
+    while ($fila = $stmt->fetch()) {
+        renderPackage($fila);
     }
 }
 
-function getTypePack(): void {
+function getTipoPaquetes(): void {
     if (!isset($_GET['type'])) {
         return;
     }
 
-    global $pdo;
+    global $conexion;
 
     $type_id = $_GET['type'];
 
-    $sql = "SELECT * FROM packages WHERE package_type = :id";
-    $stmt = $pdo->prepare($sql);
-
+    $stmt = $conexion->prepare("SELECT * FROM packages WHERE package_type = :id");
     $stmt->execute([':id' => $type_id]);
 
     if ($stmt->rowCount() === 0) {
@@ -113,38 +108,40 @@ function getTypePack(): void {
         return;
     }
 
-    while ($row = $stmt->fetch()) {
-        renderPackage($row);
+    while ($fila = $stmt->fetch()) {
+        renderPackage($fila);
     }
 }
 
 // Función para el buscador
-function getSearchPack(): void {
+function getBusquedaPaquete(): void {
     if (!isset($_GET['search'])) {
         return;
     }
 
-    global $pdo;
+    global $conexion;
 
-    $user_query = $_GET['user_query'] ?? ''; // Destino
-    $date_query = $_GET['date_query'] ?? ''; // Fecha
-    // Preparo la consulta base
-    $sql = "SELECT * FROM packages WHERE 1=1";
+    $user_query = $_GET['user_query'] ?? ''; // Destino (texto libre)
+    $date_query = $_GET['date_query'] ?? ''; // Fecha mínima de salida
+
+    // Consulta base: seleccionamos todo sin filtro todavía
+    $sql    = "SELECT * FROM packages WHERE 1=1";
     $params = [];
 
-    // Filtro por texto (título)
+    // Filtro por texto: búsqueda parcial en el título del paquete (LIKE con comodines)
     if (!empty($user_query)) {
         $sql .= " AND package_title LIKE :query";
         $params[':query'] = "%$user_query%";
     }
 
-    // Filtro por fecha (viajes que empiezan en o después de la fecha seleccionada)
+    // Filtro por fecha: viajes cuya fecha de inicio sea igual o posterior a la elegida
     if (!empty($date_query)) {
         $sql .= " AND start_date >= :date";
         $params[':date'] = $date_query;
     }
 
-    $stmt = $pdo->prepare($sql);
+    // Preparamos y ejecutamos la consulta con los parámetros activos
+    $stmt = $conexion->prepare($sql);
     $stmt->execute($params);
 
     if ($stmt->rowCount() === 0) {
@@ -154,9 +151,8 @@ function getSearchPack(): void {
 
     echo "<h3 style='grid-column: 1/-1; margin-bottom: 20px; color: #2A9D8F;'>Resultados de la búsqueda:</h3>";
 
-    while ($row = $stmt->fetch()) {
-        renderPackage($row);
+    while ($fila = $stmt->fetch()) {
+        renderPackage($fila);
     }
 }
-
 ?>

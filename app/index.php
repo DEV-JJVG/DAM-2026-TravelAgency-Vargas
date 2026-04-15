@@ -28,10 +28,10 @@ include("functions/functions.php");
                 <div id="content_area">
 
                     <div id="packages_box">
-                        <?php getPack(); ?>
-                        <?php getCatPack(); ?>
-                        <?php getTypePack(); ?>
-                        <?php getSearchPack(); ?>
+                        <?php getPaquetes(); ?>
+                        <?php getCatPaquetes(); ?>
+                        <?php getTipoPaquetes(); ?>
+                        <?php getBusquedaPaquete(); ?>
                     </div>
                 </div>
             </div>

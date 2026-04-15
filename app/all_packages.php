@@ -29,17 +29,22 @@ require_once "functions/functions.php";
 
                     <div id="packages_box">
                         <?php
-                        $sql = "SELECT * FROM packages";
-                        $result = mysqli_query($con, $sql);
+                        require_once 'vistas/db.php';
 
-                        if ($result && mysqli_num_rows($result) > 0) {
-                            while ($row = mysqli_fetch_assoc($result)) {
+                        // Obtengo todos los paquetes disponibles sin filtro ni límite
+                        // SELECT * FROM packages → tabla: packages, sin parámetros
+                        $stmt = $conexion->prepare("SELECT * FROM packages");
+                        $stmt->execute();
+
+                        if ($stmt->rowCount() > 0) {
+                            // Itero cada fila devuelta y construyo la tarjeta HTML
+                            while ($fila = $stmt->fetch()) {
                                 echo "
                         <div class='single_package'>
-                            <h3>{$row['package_title']}</h3>
-                            <img src='assets/images/packages/{$row['package_image']}' alt='{$row['package_title']}'>
-                            <p><strong>Precio: {$row['package_price']} €</strong></p>
-                            <a href='details.php?pack_id={$row['package_id']}'>Detalles</a>
+                            <h3>{$fila['package_title']}</h3>
+                            <img src='assets/imagenes/packages/{$fila['package_image']}' alt='{$fila['package_title']}'>
+                            <p><strong>Precio: {$fila['package_price']} €</strong></p>
+                            <a href='details.php?pack_id={$fila['package_id']}'>Detalles</a>
                         </div>
                         ";
                             }
