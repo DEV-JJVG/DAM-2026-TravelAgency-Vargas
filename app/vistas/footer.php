@@ -1,5 +1,4 @@
 <footer id="footer">
-    <!-- Barra legal superior -->
     <div class="footer-legal-bar">
         <nav class="footer-legal-links" aria-label="Navegación legal">
             <a href="condiciones_uso.php" id="link-condiciones-uso">Condiciones de uso</a>
@@ -10,7 +9,6 @@
         </nav>
     </div>
 
-    <!-- Créditos -->
     <div class="footer-credits">
         <p>© <?php echo date('Y'); ?> Agencia de Viajes &mdash; Jorge Juan Vargas Gálvez · 2ºDAM A</p>
     </div>

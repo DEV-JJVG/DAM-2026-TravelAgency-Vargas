@@ -26,33 +26,21 @@ if (isset($_POST['update_package'])) {
     $id = $_POST['pack_id'];
     $old_image = $_POST['old_image'];
 
-    // Cambio de imagen
+    // Cambio de imagen: Compruebo si se ha seleccionado una nueva imagen en el formulario
     $image_name = $_FILES['new_image']['name'];
 
     if ($image_name != "") {
+        // Si se subió una nueva, la muevo a la carpeta de destino y guardo su nombre
         $image_temp = $_FILES['new_image']['tmp_name'];
         move_uploaded_file($image_temp, "assets/imagenes/packages/$image_name");
         $final_image = $image_name;
     } else {
-        // Si no subió nada, mantenemos la anterior
+        // Si no subió nada, la variable toma el valor de la imagen antigua
         $final_image = $old_image;
     }
 
-    // Actualización SQL con PDO
-    $sql_update = "UPDATE packages SET 
-                    package_title = :title, 
-             package_price = :price,
-             package_desc  = :desc,
-             package_image = :img
-         WHERE package_id = :id";
-
-    $result = $stmt->execute([
-        ':title' => $title,
-        ':price' => $price,
-        ':desc'  => $desc,
-        ':img'   => $final_image,
-        ':id'    => $id
-    ]);
+    // Por último actualizo la base de datos con los datos del formulario, recibiendo los parámetros en la sentencia execute, metidos dentro de un array.
+    $result = $conexion->prepare("UPDATE packages SET package_title=?, package_price=?, package_desc=?, package_image=? WHERE package_id=?")->execute([$title, $price, $desc, $final_image, $id]);
 
     if ($result) {
         echo "<script>alert('¡Paquete actualizado con éxito!'); window.location.href='details.php?pack_id=$id';</script>";
@@ -64,100 +52,108 @@ if (isset($_POST['update_package'])) {
 
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <title>Editar Paquete</title>
-        <link rel="stylesheet" href="assets/styles/style.css">
-        <style>
-            /*Estilado para el formulario básico*/
-            .form-contenedor {
-                max-width: 600px;
-                margin: 20px auto;
-                padding: 20px;
-                background: #f9f9f9;
-                border: 1px solid #ddd;
-            }
-            .agrupado-form {
-                margin-bottom: 15px;
-            }
-            label {
-                display: block;
-                font-weight: bold;
-                margin-bottom: 5px;
-            }
-            input[type="text"], textarea {
-                width: 100%;
-                padding: 8px;
-                border: 1px solid #ccc;
-            }
-            .btn-guardar {
-                background-color: #27ae60;
-                color: white;
-                padding: 10px 20px;
-                border: none;
-                cursor: pointer;
-                font-size: 16px;
-            }
-            .btn-cancelar {
-                background-color: #7f8c8d;
-                color: white;
-                padding: 10px 20px;
-                text-decoration: none;
-                display: inline-block;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="main_wrapper">
-            <?php include 'vistas/header.php'; ?>
-            <?php include 'vistas/navbar.php'; ?>
 
-            <div class="content_wrapper">
-                <div id="content_area">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Paquete</title>
+    <link rel="stylesheet" href="assets/styles/style.css">
+    <style>
+        /*Estilado para el formulario básico*/
+        .form-contenedor {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+        }
 
-                    <div class="form-contenedor">
-                        <h2 style="text-align: center;">Editar Paquete</h2>
+        .agrupado-form {
+            margin-bottom: 15px;
+        }
 
-                        <form action="" method="post" enctype="multipart/form-data">
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
 
-                            <input type="hidden" name="pack_id" value="<?php echo $row['package_id']; ?>">
-                            <input type="hidden" name="old_image" value="<?php echo $row['package_image']; ?>">
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+        }
 
-                            <div class="agrupado-form">
-                                <label>Título del Paquete:</label>
-                                <input type="text" name="title" value="<?php echo $row['package_title']; ?>" required>
-                            </div>
+        .btn-guardar {
+            background-color: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
 
-                            <div class="agrupado-form">
-                                <label>Precio (€):</label>
-                                <input type="text" name="price" value="<?php echo $row['package_price']; ?>" required>
-                            </div>
+        .btn-cancelar {
+            background-color: #7f8c8d;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            display: inline-block;
+        }
+    </style>
+</head>
 
-                            <div class="agrupado-form">
-                                <label>Imagen Actual:</label>
-                                <img src="assets/imagenes/packages/<?php echo $row['package_image']; ?>" width="100"><br>
-                                <label>Cambiar Imagen (Opcional):</label>
-                                <input type="file" name="new_image">
-                            </div>
+<body>
+    <div class="main_wrapper">
+        <?php include 'vistas/header.php'; ?>
+        <?php include 'vistas/navbar.php'; ?>
 
-                            <div class="agrupado-form">
-                                <label>Descripción:</label>
-                                <textarea name="desc" rows="6" required><?php echo $row['package_desc']; ?></textarea>
-                            </div>
+        <div class="content_wrapper">
+            <div id="content_area">
 
-                            <div style="text-align: center; margin-top: 20px;">
-                                <a href="details.php?pack_id=<?php echo $pack_id; ?>" class="btn-cancelar">Cancelar</a>
-                                <button type="submit" name="update_package" class="btn-guardar">Guardar Cambios</button>
-                            </div>
+                <div class="form-contenedor">
+                    <h2 style="text-align: center;">Editar Paquete</h2>
 
-                        </form>
-                    </div>
+                    <form action="" method="post" enctype="multipart/form-data">
 
+                        <input type="hidden" name="pack_id" value="<?php echo $row['package_id']; ?>">
+                        <input type="hidden" name="old_image" value="<?php echo $row['package_image']; ?>">
+
+                        <div class="agrupado-form">
+                            <label>Título del Paquete:</label>
+                            <input type="text" name="title" value="<?php echo $row['package_title']; ?>" required>
+                        </div>
+
+                        <div class="agrupado-form">
+                            <label>Precio (€):</label>
+                            <input type="text" name="price" value="<?php echo $row['package_price']; ?>" required>
+                        </div>
+
+                        <div class="agrupado-form">
+                            <label>Imagen Actual:</label>
+                            <img src="assets/imagenes/packages/<?php echo $row['package_image']; ?>" width="100"><br>
+                            <label>Cambiar Imagen (Opcional):</label>
+                            <input type="file" name="new_image">
+                        </div>
+
+                        <div class="agrupado-form">
+                            <label>Descripción:</label>
+                            <textarea name="desc" rows="6" required><?php echo $row['package_desc']; ?></textarea>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 20px;">
+                            <a href="details.php?pack_id=<?php echo $pack_id; ?>" class="btn-cancelar">Cancelar</a>
+                            <button type="submit" name="update_package" class="btn-guardar">Guardar Cambios</button>
+                        </div>
+
+                    </form>
                 </div>
+
             </div>
-
-            <?php include "vistas/footer.php"; ?>
         </div>
-    </body>
-</html>
 
+        <?php include "vistas/footer.php"; ?>
+    </div>
+</body>
+
+</html>
