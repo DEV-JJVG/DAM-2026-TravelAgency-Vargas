@@ -5,8 +5,8 @@ require_once "vistas/db.php";
 if (isset($_GET['pack_id'])) {
     $pack_id = $_GET['pack_id'];
 
-    $stmt = $conexion->prepare("SELECT * FROM packages WHERE package_id = :id");
-    $stmt->execute([':id' => $pack_id]);
+    $stmt = $conexion->prepare("SELECT * FROM packages WHERE package_id = ?");
+    $stmt->execute([$pack_id]);
     $row = $stmt->fetch();
 
     if (!$row) {

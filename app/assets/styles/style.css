@@ -258,32 +258,150 @@ a {
     background: #F4A261;
     color: #fff;
 }
-/* --- Estilos para el Icono de Admin en Header --- */
-.admin-toggle {
+/* --- Estilos de Autenticación en Header --- */
+.auth-section {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    gap: 15px;
+}
+
+.welcome-msg {
+    font-weight: 600;
+    color: #264653;
+}
+
+.btn-auth-header {
+    background: #2A9D8F;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.btn-auth-header:hover {
+    background: #21867a;
+    color: #fff;
+}
+
+/* --- Estilos Formularios de Autenticación --- */
+.auth_form_container {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    width: 100%;
+    max-width: 450px;
+    margin-top: 50px;
+}
+
+.auth_form_container h2 {
+    color: #264653;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.auth_form .form_group {
+    margin-bottom: 20px;
+}
+
+.auth_form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #4a6572;
+    font-weight: 600;
+}
+
+.auth_form input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.btn_auth {
+    width: 100%;
+    background: #E9C46A;
+    color: #264653;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn_auth:hover {
+    background: #F4A261;
+    color: #fff;
+}
+
+.auth_link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+}
+
+.auth_link a {
+    color: #2A9D8F;
+    font-weight: 600;
+}
+
+.error_msg {
+    color: #e76f51;
+    background: #ffe3e3;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.success_msg {
+    color: #2A9D8F;
+    background: #e3f8f5;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* --- Estilos para Botones Administrador en Paquetes --- */
+.package_actions {
+    display: flex;
+    gap: 10px;
     justify-content: center;
-    text-decoration: none;
-    background: #f0f0f0;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    margin-left: 20px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    flex-wrap: wrap;
 }
 
-.admin-toggle:hover {
-    transform: scale(1.1);
-    background: #e0e0e0;
+.single_package .package_actions a {
+    flex: 1;
+    min-width: 80px;
+    padding: 8px 10px;
 }
 
-.admin-icon {
-    font-size: 24px;
+.single_package .btn-edit {
+    background: #2A9D8F;
+    color: #fff;
 }
 
-/* --- Estilos para Botones Administrador --- */
+.single_package .btn-edit:hover {
+    background: #21867a;
+}
+
+.single_package .btn-delete {
+    background: #e76f51;
+    color: #fff;
+}
+
+.single_package .btn-delete:hover {
+    background: #d65a3d;
+}
+
 .btn-disabled {
     background-color: #cccccc;
     color: #888888;

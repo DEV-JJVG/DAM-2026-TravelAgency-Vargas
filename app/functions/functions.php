@@ -36,7 +36,17 @@ function renderPackage(array $paquetes): void {
         <h3>{$paquetes['package_title']}</h3>
         <img src='assets/imagenes/packages/{$paquetes['package_image']}' alt='{$paquetes['package_title']}'>
         <p><strong>Precio: {$paquetes['package_price']} €</strong></p>
-        <a href='details.php?pack_id={$paquetes['package_id']}'>Detalles</a>
+        <div class='package_actions'>
+            <a href='details.php?pack_id={$paquetes['package_id']}'>Detalles</a>";
+
+    if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+        echo "
+            <a href='editar_paquete.php?pack_id={$paquetes['package_id']}' class='btn-edit'>Editar</a>
+            <a href='borrar_paquete.php?pack_id={$paquetes['package_id']}' class='btn-delete' onclick='return confirm(\"¿Estás seguro de que quieres borrar este paquete?\");'>Borrar</a>";
+    }
+
+    echo "
+        </div>
     </div>
     ";
 }
