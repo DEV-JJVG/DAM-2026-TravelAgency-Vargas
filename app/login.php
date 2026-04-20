@@ -15,7 +15,6 @@ if (isset($_SESSION['user_id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombreUsuario = trim($_POST['username'] ?? '');
     $contraseña = $_POST['password'] ?? '';
-    $nombreSaldo = trim($_POST[''] ?? '');
     if (empty($nombreUsuario) || empty($contraseña)) {
         $mensaje = "<p class='error_msg'>Por favor, completa todos los campos.</p>";
     } else {
