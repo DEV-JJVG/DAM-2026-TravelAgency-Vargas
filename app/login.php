@@ -5,15 +5,17 @@ include("functions/functions.php");
 
 $mensaje = "";
 
+// Verifico que no haya alguien logueado antes de iniciar sesión
 if (isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
 }
 
+// Proceso el formulario de inicio de sesión
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombreUsuario = trim($_POST['username'] ?? '');
     $contraseña = $_POST['password'] ?? '';
-
+    $nombreSaldo = trim($_POST[''] ?? '');
     if (empty($nombreUsuario) || empty($contraseña)) {
         $mensaje = "<p class='error_msg'>Por favor, completa todos los campos.</p>";
     } else {
@@ -56,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div id="content_area" style="width: 100%; display: flex; justify-content: center;">
                 <div class="auth_form_container">
                     <h2>Iniciar Sesión</h2>
-                    <?php echo $message; ?>
+                    <?php echo $mensaje; ?>
                     <form method="POST" action="login.php" class="auth_form">
                         <div class="form_group">
                             <label for="username">Usuario o Email</label>

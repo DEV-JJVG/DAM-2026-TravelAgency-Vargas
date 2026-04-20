@@ -5,11 +5,13 @@ include("functions/functions.php");
 
 $mensaje = "";
 
+// Verifico que no haya alguien logueado antes de registrarse
 if (isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
 }
 
+// Proceso el formulario de registro
 if (isset($_POST['username'])) {
     $nombreUsuario = trim($_POST['username'] ?? '');
     $contraseña = $_POST['password'] ?? '';
@@ -20,12 +22,12 @@ if (isset($_POST['username'])) {
     if (empty($nombreUsuario) || empty($contraseña) || empty($email)) {
         $mensaje = "<p class='error_msg'>Por favor, completa los campos obligatorios (Usuario, Contraseña, Email).</p>";
     } else {
-        $contraseñaHasheada = password_hash($contraseña, PASSWORD_DEFAULT);
+        $hashContraseña = password_hash($contraseña, PASSWORD_DEFAULT);
 
         try {
             $conexion->prepare("INSERT INTO users (username, password, email, first_name, last_name) VALUES (?, ?, ?, ?, ?)")->execute([
                 $nombreUsuario,
-                $contraseñaHasheada,
+                $hashContraseña,
                 $email,
                 $nombre,
                 $apellido,
@@ -59,7 +61,7 @@ if (isset($_POST['username'])) {
             <div id="content_area" style="width: 100%; display: flex; justify-content: center;">
                 <div class="auth_form_container">
                     <h2>Registro de Usuario</h2>
-                    <?php echo $message; ?>
+                    <?php echo $mensaje; ?>
                     <form method="POST" action="register.php" class="auth_form">
                         <div class="form_group">
                             <label for="username">Usuario *</label>
